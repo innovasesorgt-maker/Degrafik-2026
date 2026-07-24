@@ -36,52 +36,49 @@
 
     <script>
         // Función para cargar los datos e inicializar el gráfico
-        async function cargarDatosYGraficar() {
-            try {
-                // Reemplaza esta URL con la URL de tu API de Google Apps Script o tu fuente JSON externa
-                // const respuesta = await fetch('URL_DE_TU_API_O_WEB_APP');
-                // const datosRemotos = await respuesta.json();
+      async function cargarDatosYGraficar() {
+    try {
+        // 1. Pega aquí la URL de tu Aplicación Web de Google Apps Script
+        const urlAPI = 'https://script.google.com/macros/s/TU_URL_DE_APPS_SCRIPT/exec';
+        
+        const respuesta = await fetch(urlAPI);
+        const datosRemotos = await respuesta.json();
 
-                // Datos de ejemplo (simulando los datos que llegarían de tu hoja de cálculo)
-                const datosSimulados = {
-                    etiquetas: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
-                    valores: [15, 28, 22, 35, 40, 52]
-                };
+        // 2. Extrae las etiquetas y los valores dependiendo de cómo estructuraste el JSON.
+        // (Asumiendo que tu JSON es un arreglo de objetos con propiedades como 'etiqueta' y 'valor')
+        const etiquetas = datosRemotos.map(item => item.etiqueta);
+        const valores = datosRemotos.map(item => item.valor);
 
-                const ctx = document.getElementById('graficoDinamico').getContext('2d');
-                
-                new Chart(ctx, {
-                    type: 'line', // Puedes cambiar a 'bar', 'pie', etc.
-                    data: {
-                        labels: datosSimulados.etiquetas,
-                        datasets: [{
-                            label: 'Datos desde la Nube (Google Sheets)',
-                            data: datosSimulados.valores,
-                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                            borderColor: 'rgba(0, 123, 255, 1)',
-                            borderWidth: 2,
-                            tension: 0.3,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
+        const ctx = document.getElementById('graficoDinamico').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: etiquetas, // Usamos los datos reales de Google Sheets
+                datasets: [{
+                    label: 'Datos desde la Nube (Google Sheets)',
+                    data: valores, // Usamos los datos reales de Google Sheets
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
-                });
-
-            } catch (error) {
-                console.error('Error al cargar los datos de la hoja de cálculo:', error);
+                }
             }
-        }
+        });
 
-        // Ejecutar la función al cargar la página
-        cargarDatosYGraficar();
-    </script>
+    } catch (error) {
+        console.error("Error al cargar los datos de Google Sheets:", error);
+    }
+}
 
-</body>
-</html>
+// Ejecutar la función al cargar la página
+cargarDatosYGraficar();
