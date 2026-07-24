@@ -61,10 +61,7 @@
     async function cargarDatosYGraficar() {
         try {
             const p1 = "https://script.google.com/macros/s/AKfycbwVohlDXV3snl8BNYDnn9CSiftGkC6X87EzGLNuxSxH-s40j-BEBvVa38SlBtUQR7YOBQ/exec";
-            const p2 = "AKfycbwb6gMxyNuGYHcryWPSe030Wo_";
-            const p3 = "r210gqR1BEYvO8vFcVM0IhCEDVb6CeWJVkp26kPDvg";
-            const p4 = "/exec";
-            const urlAPI = p1 + p2 + p3 + p4;
+            const urlAPI = p1 
             
             const respuesta = await fetch(urlAPI);
             const textoPlano = await respuesta.text();
