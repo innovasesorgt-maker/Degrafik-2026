@@ -35,29 +35,35 @@
     </div>
 
     <script>
-        // Función para cargar los datos e inicializar el gráfico
-      async function cargarDatosYGraficar() {
+async function cargarDatosYGraficar() {
     try {
-        // 1. Pega aquí la URL de tu Aplicación Web de Google Apps Script
-        const urlAPI = 'https://script.google.com/macros/s/AKfycbxz9bqLn8gh0c4vUwEorqNZ-hrnHu6JZNF7S768eqgQAJL--qwOuPlVEkSHjYeR2UhPOQ/exec';
+        // Tu URL de Google Apps Script terminada en /exec
+        const urlAPI = 'https://script.google.com/macros/s/AKfycbwb6gMxyNuGYHcryWPSe030Wo_r210gqR1BEYvO8vFcVM0IhCEDVb6CeWJVkp26kPDvg/exec';
         
         const respuesta = await fetch(urlAPI);
         const datosRemotos = await respuesta.json();
 
-        // 2. Extrae las etiquetas y los valores dependiendo de cómo estructuraste el JSON.
-        // (Asumiendo que tu JSON es un arreglo de objetos con propiedades como 'etiqueta' y 'valor')
+        console.log("Datos recibidos de Google Sheets:", datosRemotos);
+
+        // Extraemos las propiedades que envía tu API
         const etiquetas = datosRemotos.map(item => item.etiqueta);
         const valores = datosRemotos.map(item => item.valor);
 
-        const ctx = document.getElementById('graficoDinamico').getContext('2d');
+        const canvasElement = document.getElementById('graficoDinamico');
+        if (!canvasElement) {
+            console.error("No se encontró el elemento canvas con id 'graficoDinamico'");
+            return;
+        }
+
+        const ctx = canvasElement.getContext('2d');
 
         new Chart(ctx, {
-            type: 'line',
+            type: 'line', // Puedes cambiar a 'bar' si prefieres barras
             data: {
-                labels: etiquetas, // Usamos los datos reales de Google Sheets
+                labels: etiquetas,
                 datasets: [{
-                    label: 'Datos desde la Nube (Google Sheets)',
-                    data: valores, // Usamos los datos reales de Google Sheets
+                    label: 'Cantidad por Área',
+                    data: valores,
                     backgroundColor: 'rgba(0, 123, 255, 0.2)',
                     borderColor: 'rgba(0, 123, 255, 1)',
                     borderWidth: 2,
@@ -76,9 +82,10 @@
         });
 
     } catch (error) {
-        console.error("Error al cargar los datos de Google Sheets:", error);
+        console.error("Error al cargar o procesar los datos:", error);
     }
 }
 
-// Ejecutar la función al cargar la página
+// Ejecutar al cargar la página
 cargarDatosYGraficar();
+</script>
