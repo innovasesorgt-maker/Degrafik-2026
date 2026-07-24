@@ -55,7 +55,6 @@
 <body>
 
     <div class="container">
-        <!-- Reemplaza el src con la URL de tu logo subido a GitHub si lo deseas -->
         <img src="logo.png" alt="Degrafik Logo" class="logo">
         <h1>Panel de Métricas en Tiempo Real</h1>
         
@@ -67,8 +66,11 @@
     <script>
     async function cargarDatosYGraficar() {
         try {
-            // URL limpia y sin espacios en blanco
-            const urlAPI = 'https://script.google.com/macros/s/AKfycbwb6gMxyNuGYHcryWPSe030Wo_r210gqR1BEYvO8vFcVM0IhCEDVb6CeWJVkp26kPDvg/exec';
+            // URL armada de forma segura por partes para impedir errores de espacios al copiar
+            const parte1 = "https://script.google.com/macros/s/";
+            const parte2 = "AKfycbwb6gMxyNuGYHcryWPSe030Wo_r210gqR1BEYvO8vFcVM0IhCEDVb6CeWJVkp26kPDvg";
+            const parte3 = "/exec";
+            const urlAPI = parte1 + parte2 + parte3;
             
             const respuesta = await fetch(urlAPI);
             const textoPlano = await respuesta.text();
@@ -77,12 +79,11 @@
             const etiquetas = datosRemotos.map(item => item.etiqueta);
             const valores = datosRemotos.map(item => item.valor);
 
-            // Paleta de colores profesional estilo semáforo/estado
             const coloresBarras = etiquetas.map(etiqueta => {
-                if (etiqueta.includes('Instalación Pendiente')) return '#dc3545'; // Rojo
-                if (etiqueta.includes('Producción')) return '#ffc107'; // Amarillo
-                if (etiqueta.includes('Completado')) return '#28a745'; // Verde
-                if (etiqueta.includes('Diseño')) return '#fd7e14'; // Naranja
+                if (etiqueta.includes('Instalación Pendiente')) return '#dc3545';
+                if (etiqueta.includes('Producción')) return '#ffc107';
+                if (etiqueta.includes('Completado')) return '#28a745';
+                if (etiqueta.includes('Diseño')) return '#fd7e14';
                 if (etiqueta.includes('Rollo')) return '#ffc107'; 
                 if (etiqueta.includes('Corte Laser')) return '#ffeeba'; 
                 return '#6c757d';
