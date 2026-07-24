@@ -34,35 +34,26 @@
         <canvas id="graficoDinamico"></canvas>
     </div>
 
-    <script>
+  <script>
 async function cargarDatosYGraficar() {
     try {
-        // Tu URL de Google Apps Script terminada en /exec
         const urlAPI = 'https://script.google.com/macros/s/AKfycbwb6gMxyNuGYHcryWPSe030Wo_r210gqR1BEYvO8vFcVM0IhCEDVb6CeWJVkp26kPDvg/exec';
         
         const respuesta = await fetch(urlAPI);
-        const datosRemotos = await respuesta.json();
+        const textoPlano = await respuesta.text();
+        const datosRemotos = JSON.parse(textoPlano);
 
-        console.log("Datos recibidos de Google Sheets:", datosRemotos);
-
-        // Extraemos las propiedades que envía tu API
         const etiquetas = datosRemotos.map(item => item.etiqueta);
         const valores = datosRemotos.map(item => item.valor);
 
-        const canvasElement = document.getElementById('graficoDinamico');
-        if (!canvasElement) {
-            console.error("No se encontró el elemento canvas con id 'graficoDinamico'");
-            return;
-        }
-
-        const ctx = canvasElement.getContext('2d');
+        const ctx = document.getElementById('graficoDinamico').getContext('2d');
 
         new Chart(ctx, {
-            type: 'line', // Puedes cambiar a 'bar' si prefieres barras
+            type: 'line',
             data: {
                 labels: etiquetas,
                 datasets: [{
-                    label: 'Cantidad por Área',
+                    label: 'Cantidad por Carpeta',
                     data: valores,
                     backgroundColor: 'rgba(0, 123, 255, 0.2)',
                     borderColor: 'rgba(0, 123, 255, 1)',
@@ -80,12 +71,10 @@ async function cargarDatosYGraficar() {
                 }
             }
         });
-
     } catch (error) {
-        console.error("Error al cargar o procesar los datos:", error);
+        console.error("Detalle del error al graficar:", error);
     }
 }
 
-// Ejecutar al cargar la página
 cargarDatosYGraficar();
 </script>
