@@ -10,25 +10,30 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-datalabels@2"></script>
     
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-        .container {
-            width: 80%;
-            max-width: 800px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #0056b3;
-        }
-    </style>
+  /* NUEVO: Aseguramos que la página ocupe toda la altura de la ventana */
+  html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f9f9f9;
+  }
+
+  .container {
+      width: 90%;
+      /* NUEVO: Definimos un alto fijo para el panel */
+      height: 80vh; 
+      max-width: 900px;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      /* Importante para que Chart.js respete el alto */
+      position: relative; 
+  }
+  /* ... resto de tu estilo ... */
+</style>
 </head>
 <body>
 
@@ -42,10 +47,10 @@
     <canvas id="graficoDinamico"></canvas>
 </div>
 
-  <script>
+ <script>
 async function cargarDatosYGraficar() {
     try {
-        const urlAPI = 'https://script.google.com/macros/s/AKfycbwSuWjfaLKmJWKjSY7MW9hrmg9ryjbbaj-m0q17YVv3Eb3A8fP5RMCmeV1Os2wEh_2i0A/exec';
+        const urlAPI = 'https://script.google.com/macros/s/AKfycbwb6gMxyNuGYHcryWPSe030Wo_r210gqR1BEYvO8vFcVM0IhCEDVb6CeWJVkp26kPDvg/exec';
         
         const respuesta = await fetch(urlAPI);
         const textoPlano = await respuesta.text();
@@ -54,14 +59,13 @@ async function cargarDatosYGraficar() {
         const etiquetas = datosRemotos.map(item => item.etiqueta);
         const valores = datosRemotos.map(item => item.valor);
 
-        // Colores personalizados estilo semáforo/estado
         const coloresBarras = etiquetas.map(etiqueta => {
             if (etiqueta.includes('Instalación Pendiente')) return '#dc3545'; // Rojo
             if (etiqueta.includes('Producción')) return '#ffc107'; // Amarillo
             if (etiqueta.includes('Completado')) return '#28a745'; // Verde
             if (etiqueta.includes('Diseño')) return '#fd7e14'; // Naranja
-            if (etiqueta.includes('Rollo')) return '#ffc107'; // Amarillo claro
-            if (etiqueta.includes('Corte Laser')) return '#ffeeba'; // Amarillo suave
+            if (etiqueta.includes('Rollo')) return '#ffc107';
+            if (etiqueta.includes('Corte Laser')) return '#ffeeba';
             return '#6c757d';
         });
 
@@ -81,46 +85,53 @@ async function cargarDatosYGraficar() {
                     backgroundColor: coloresBarras,
                     borderWidth: 1,
                     borderRadius: 6,
-                    barPercentage: 0.65
+                    barPercentage: 0.6
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                // Permite que la gráfica se estire al tamaño del contenedor definido en CSS
+                maintainAspectRatio: false, 
                 layout: {
-                    padding: { top: 20, bottom: 10 }
+                    padding: { top: 30, bottom: 20 } // Espaciado para los números
                 },
                 plugins: {
                     legend: { display: false },
                     title: {
-                        display: false
+                        display: true,
+                        text: 'Estado de Producción Degrafik',
+                        font: { size: 18, family: 'Arial' },
+                        color: '#0056b3'
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
-                        ticks: { font: { size: 12 } }
+                        // --- NUEVO: Forzamos el eje Y para que no se corte ---
+                        suggestedMax: Math.max(...valores) + 2, // Un poco más alto que el valor máximo
+                        ticks: {
+                            font: { size: 12 },
+                            stepSize: 1 // Forzamos números enteros si son valores pequeños
+                        },
+                        grid: { color: 'rgba(0, 0, 0, 0.07)' }
                     },
                     x: {
+                        // --- NUEVO: Aseguramos que el eje X muestre las etiquetas ---
+                        display: true,
                         grid: { display: false },
                         ticks: {
                             font: { size: 12, weight: 'bold' },
                             color: '#333',
-                            callback: function(value) {
-                                const label = this.getLabelForValue(value);
-                                if (typeof label === 'string' && label.length > 16) {
-                                    return label.split(' ');
-                                }
-                                return label;
-                            }
+                            maxRotation: 45, // Rotamos un poco si son muy largas
+                            minRotation: 0,
+                            autoSkip: false // Mostramos todas las etiquetas
                         }
                     }
                 }
             }
         });
     } catch (error) {
-        console.error("Detalle del error al graficar:", error);
+        console.error("Error:", error);
     }
 }
 
