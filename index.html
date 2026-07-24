@@ -31,17 +31,11 @@
             box-sizing: border-box;
         }
 
-        .logo {
-            max-width: 180px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
         h1 {
             color: #0056b3;
-            font-size: 22px;
-            margin-top: 0;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-top: 10px;
+            margin-bottom: 25px;
             text-align: center;
         }
 
@@ -55,7 +49,6 @@
 <body>
 
     <div class="container">
-        <img src="logo.png" alt="Degrafik Logo" class="logo">
         <h1>Panel de Métricas en Tiempo Real</h1>
         
         <div class="chart-wrapper">
@@ -66,11 +59,8 @@
     <script>
     async function cargarDatosYGraficar() {
         try {
-            // URL armada de forma segura por partes para impedir errores de espacios al copiar
-            const parte1 = "https://script.google.com/macros/s/";
-            const parte2 = "AKfycbwb6gMxyNuGYHcryWPSe030Wo_r210gqR1BEYvO8vFcVM0IhCEDVb6CeWJVkp26kPDvg";
-            const parte3 = "/exec";
-            const urlAPI = parte1 + parte2 + parte3;
+            // URL directa blindada contra espacios fantasma
+            const urlAPI = 'https://script.google.com/macros/s/AKfycbwb6gMxyNuGYHcryWPSe030Wo_r210gqR1BEYvO8vFcVM0IhCEDVb6CeWJVkp26kPDvg/exec';
             
             const respuesta = await fetch(urlAPI);
             const textoPlano = await respuesta.text();
